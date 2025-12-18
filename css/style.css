@@ -38,12 +38,6 @@ body {
   color: #fff;
 }
 
-#program-header .icon {
-  width: 24px;
-  height: 24px;
-  fill: #fff;
-}
-
 #program-list {
   list-style: none;
   padding: 0;
@@ -80,31 +74,19 @@ body {
 }
 
 .program-item .title {
-  font-size: 0.95rem;
-  color: #fff;
+  font-size: 1rem;
+  color: #666;
   margin-bottom: 2px;
 }
 
 .program-item .composer {
-  font-size: 0.8rem;
-  color: #888;
+    font-size: 1.2rem;
+    color: #fff;
 }
 
 .program-item .duration {
   font-size: 0.8rem;
   color: #666;
-}
-
-.program-item .play-icon {
-  display: none;
-}
-
-/* Badge Extrait */
-.program-item .badge {
-  font-size: 0.7rem;
-  color: #888;
-  padding: 2px 5px;
-  border: 1px solid #444;
 }
 
 /* Responsive */

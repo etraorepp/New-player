@@ -29,8 +29,8 @@ function loadProgram(configUrl, player) {
         li.innerHTML = `
           <span class="index">${chapter.index || i + 1}</span>
           <div class="content">
-            <div class="title">${title}</div>
-            ${composer ? `<div class="composer">${composer}</div>` : ''}
+            ${composer ? `<div class="composer">${composer}</div>
+            <div class="title">${title}</div>` : ''}
           </div>
           <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
         `;
