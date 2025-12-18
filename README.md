@@ -73,9 +73,11 @@ fetch(configUrl)                    // Récupère le fichier JSON
   .then(data => { ... });           // Utilise les données
 ```
 
-#### Étape 2 : Parcourir les chapitres
+#### Étape 2 : Parcourir les chapitres selon le mode
 
 ```javascript
+const isExtrait = data.mode === 'sample';  // Détecte si mode Extrait (sample) ou Intégral
+
 data.chapters.forEach((chapter, i) => {
   const [title, composer] = chapter.title.split(' , ');  // Sépare "Titre , Compositeur"
   const startSec = timeToSeconds(chapter.start);         // Temps de début en secondes
@@ -92,10 +94,10 @@ li.className = 'program-item';             // Ajoute la classe CSS
 li.innerHTML = `
   <span class="index">${chapter.index || i + 1}</span>     <!-- Numéro -->
   <div class="content">
-    <div class="title">${title}</div>                       <!-- Titre -->
-    ${composer ? `<div class="composer">${composer}</div>` : ''}  <!-- Compositeur (si existe) -->
+    ${composer ? `<div class="composer">${composer}</div>  <!-- Compositeur -->
+    <div class="title">${title}</div>` : ''}               <!-- Titre -->
   </div>
-  <span class="duration">${formatDuration(...)}</span>      <!-- Durée -->
+  <span class="duration">${formatDuration(...)}</span>     <!-- Durée -->
 `;
 ```
 
@@ -103,7 +105,15 @@ li.innerHTML = `
 
 ```javascript
 li.onclick = () => {
-  if (window.jwplayer) jwplayer().seek(startSec);  // Saute à ce moment dans la vidéo
+  if (window.jwplayer) {
+    if (isExtrait) {
+      // Mode Extrait : changer de piste (chaque chapitre = vidéo séparée)
+      jwplayer().playlistItem(i);
+    } else {
+      // Mode Intégral : seek dans la vidéo unique
+      jwplayer().seek(startSec);
+    }
+  }
   list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));  // Retire "active" de tous
   li.classList.add('active');  // Ajoute "active" à l'élément cliqué
 };
@@ -114,15 +124,26 @@ li.onclick = () => {
 ```javascript
 setTimeout(() => {                    // Attend 2 secondes (le temps que le player charge)
   if (window.jwplayer) {
-    jwplayer().on('time', e => {      // À chaque mise à jour du temps de lecture
-      const items = list.children;
-      for (let i = 0; i < items.length; i++) {
-        const start = timeToSeconds(data.chapters[i].start);
-        const end = data.chapters[i + 1] ? timeToSeconds(data.chapters[i + 1].start) : Infinity;
-        // Active l'élément si le temps actuel est entre start et end
-        items[i].classList.toggle('active', e.position >= start && e.position < end);
-      }
-    });
+    if (isExtrait) {
+      // Mode Extrait : écouter le changement de piste
+      jwplayer().on('playlistItem', e => {
+        const items = list.children;
+        for (let i = 0; i < items.length; i++) {
+          items[i].classList.toggle('active', i === e.index);
+        }
+      });
+    } else {
+      // Mode Intégral : écouter le temps
+      jwplayer().on('time', e => {
+        const items = list.children;
+        for (let i = 0; i < items.length; i++) {
+          const start = timeToSeconds(data.chapters[i].start);
+          const end = data.chapters[i + 1] ? timeToSeconds(data.chapters[i + 1].start) : Infinity;
+          // Active l'élément si le temps actuel est entre start et end
+          items[i].classList.toggle('active', e.position >= start && e.position < end);
+        }
+      });
+    }
   }
 }, 2000);
 ```
