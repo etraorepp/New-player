@@ -27,7 +27,7 @@ function loadProgram(configUrl, player) {
         li.className = 'program-item';
 
         li.innerHTML = `
-          <span class="index">${chapter.index || i + 1}</span>
+          <span class="index">${chapter.index || i + 1}.</span>
           <div class="content">
             ${composer ? `<div class="composer">${composer}</div>
             <div class="title">${title}</div>` : ''}
