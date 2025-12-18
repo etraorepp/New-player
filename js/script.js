@@ -17,6 +17,7 @@ function loadProgram(configUrl, player) {
     .then(res => res.json())
     .then(data => {
       const list = document.getElementById('program-list');
+      const isExtrait = data.mode === 'sample';  // Détecte le mode
 
       data.chapters.forEach((chapter, i) => {
         const [title, composer] = chapter.title.split(' , ');
@@ -35,7 +36,16 @@ function loadProgram(configUrl, player) {
         `;
 
         li.onclick = () => {
-          if (window.jwplayer) jwplayer().seek(startSec);
+          if (window.jwplayer) {
+            if (isExtrait) {
+              // Mode Extrait : changer de piste (chaque chapitre = vidéo séparée)
+              jwplayer().playlistItem(i);
+            } else {
+              // Mode Intégral : seek dans la vidéo unique
+              jwplayer().seek(startSec);
+            }
+          }
+          // Mettre à jour l'état actif
           list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
           li.classList.add('active');
         };
@@ -46,14 +56,25 @@ function loadProgram(configUrl, player) {
       // Mise à jour du chapitre actif pendant la lecture
       setTimeout(() => {
         if (window.jwplayer) {
-          jwplayer().on('time', e => {
-            const items = list.children;
-            for (let i = 0; i < items.length; i++) {
-              const start = timeToSeconds(data.chapters[i].start);
-              const end = data.chapters[i + 1] ? timeToSeconds(data.chapters[i + 1].start) : Infinity;
-              items[i].classList.toggle('active', e.position >= start && e.position < end);
-            }
-          });
+          if (isExtrait) {
+            // Mode Extrait : écouter le changement de piste
+            jwplayer().on('playlistItem', e => {
+              const items = list.children;
+              for (let i = 0; i < items.length; i++) {
+                items[i].classList.toggle('active', i === e.index);
+              }
+            });
+          } else {
+            // Mode Intégral : écouter le temps
+            jwplayer().on('time', e => {
+              const items = list.children;
+              for (let i = 0; i < items.length; i++) {
+                const start = timeToSeconds(data.chapters[i].start);
+                const end = data.chapters[i + 1] ? timeToSeconds(data.chapters[i + 1].start) : Infinity;
+                items[i].classList.toggle('active', e.position >= start && e.position < end);
+              }
+            });
+          }
         }
       }, 2000);
     });
