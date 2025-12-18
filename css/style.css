@@ -1,0 +1,127 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  font-family: "SourceSansPro-Regular", "Arial", "Helvetica", sans-serif;
+}
+
+#player {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Section Programme */
+#program-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#program-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+#program-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+#program-header .icon {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+#program-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.program-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #222;
+}
+
+.program-item:hover {
+  background-color: #1a1a1a;
+}
+
+.program-item.active {
+  background-color: #222;
+}
+
+.program-item .index {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+  color: #888;
+}
+
+.program-item .content {
+  flex: 1;
+  min-width: 0;
+}
+
+.program-item .title {
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.program-item .composer {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.program-item .duration {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.program-item .play-icon {
+  display: none;
+}
+
+/* Badge Extrait */
+.program-item .badge {
+  font-size: 0.7rem;
+  color: #888;
+  padding: 2px 5px;
+  border: 1px solid #444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #program-section {
+    padding: 15px;
+  }
+
+  .program-item {
+    padding: 10px 8px;
+  }
+
+  .program-item .duration {
+    display: none;
+  }
+
+  .program-item .title {
+    font-size: 0.9rem;
+  }
+}

@@ -14,19 +14,27 @@
     />
     <script src="https://pup.philharmoniedeparis.fr/puplayer.umd.js"></script>
 
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: black;
-        font-family: "SourceSansPro-Regular", "Arial", "Helvetica", sans-serif;
-      }
-    </style>
+    <!-- CSS Programme -->
+    <link href="css/style.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div id="player"></div>
 
+    <!-- Section Programme -->
+    <div id="program-section">
+      <div id="program-header">
+        <h2>Programme du concert</h2>
+      </div>
+      <ul id="program-list"></ul>
+    </div>
+
+    <!-- JS Programme -->
+    <script src="js/script.js"></script>
     <script>
+      // Configuration
+      const configUrl = "https://otoplayer.philharmoniedeparis.fr/fr/config/1152184.json";
+      
+      // Créer le player
       const player = PUPlayer.create(
         // container
         document.querySelector("#player"),
@@ -40,6 +48,9 @@
           embedded: false,
         }
       );
+
+      // Charger le programme
+      loadProgram(configUrl, player);
     </script>
   </body>
 </html>
