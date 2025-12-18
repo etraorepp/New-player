@@ -12,7 +12,7 @@ function formatDuration(start, end) {
 }
 
 // Charger et afficher le programme
-function loadProgram(configUrl, player) {
+function loadProgram(configUrl) {
   fetch(configUrl)
     .then(res => res.json())
     .then(data => {
