@@ -1,0 +1,239 @@
+{
+  "concert_id": "1152184",
+  "video_type": "Live",
+  "language": "fr",
+  "localization": null,
+  "autorized": false,
+  "ip": "192.168.22.10 -  -  - 0 - CONTRAT_1",
+  "date_start": "2023-04-03T20:00+02:00",
+  "date_end": "2023-04-03T23:59+02:00",
+  "date_available": null,
+  "title": "Lucas Debargue : Mozart, Chopin, Alkan",
+  "recorded": "Concert enregistré à la Philharmonie de Paris (Grande salle Pierre Boulez - Philharmonie) le 03 avril 2023",
+  "broadcasted": "",
+  "mention": null,
+  "tagline": null,
+  "courtesy": null,
+  "image": "https://cdn.philharmoniedeparis.fr/http/images/poster/PPVI000325400.png",
+  "aspectratio": "16:9",
+  "mode": "sample",
+  "mode_name": "Extrait",
+  "startTrack": null,
+  "composers": [
+    {
+      "name": "Mozart Wolfgang Amadeus",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Chopin Frédéric",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Alkan Charles-Valentin",
+      "concerts": null,
+      "link": null
+    }
+  ],
+  "performers": [
+    {
+      "name": "Debargue Lucas",
+      "concerts": null,
+      "link": null
+    }
+  ],
+  "chaptersfile": "https://otoplayer.philharmoniedeparis.fr/fr/vtt/1152184.vtt",
+  "thumbnailsfile": "https://otoplayer.philharmoniedeparis.fr/fr/thumbnails/1152184.vtt",
+  "chapters": [
+    {
+      "title": "Sonate pour piano n°8 en la mineur, KV 310 , Wolfgang Amadeus Mozart",
+      "start": "00:00:00",
+      "end": "00:22:50.8270000",
+      "index": "1",
+      "startSample": "00:00:29.4890000",
+      "endSample": "00:01:59.5630000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/01.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/01.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_01.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Ballade n° 2, op. 38 , Frédéric Chopin",
+      "start": "00:22:50.8270000",
+      "end": "00:30:12.7790000",
+      "index": "2",
+      "startSample": "00:22:50.9140000",
+      "endSample": "00:24:50.7480000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/02.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/02.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_02.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Prélude en do dièse mineur, op. 45 , Frédéric Chopin",
+      "start": "00:30:12.7790000",
+      "end": "00:34:26.9380000",
+      "index": "3",
+      "startSample": "00:30:23.0050000",
+      "endSample": "00:31:34.7620000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/03.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/03.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_03.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Polonaise-Fantaisie, op. 61 , Frédéric Chopin",
+      "start": "00:34:26.9380000",
+      "end": "00:47:15.5970000",
+      "index": "4",
+      "startSample": "00:38:16.8650000",
+      "endSample": "00:39:35.2980000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/04.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/04.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_04.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Etude n° 8 en sol dièse mineur, op.39 n° 8 \"Concerto pour piano seul : Allegro assai\" , Charles-Valentin Alkan",
+      "start": "00:47:15.5970000",
+      "end": "01:20:27.9400000",
+      "index": "5",
+      "startSample": "00:53:53.9400000",
+      "endSample": "00:56:11.8450000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/05.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/05.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_05.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Berceuse en ré bémol majeur, op.57 , Frédéric Chopin",
+      "start": "01:20:27.9400000",
+      "end": "01:25:52.5990000",
+      "index": "6",
+      "startSample": "01:20:27.9400000",
+      "endSample": "01:21:47.6690000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/06.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/06.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_06.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Polonaise en la bémol majeur op.53 , Frédéric Chopin",
+      "start": "01:25:52.5990000",
+      "end": "01:33:28.9250000",
+      "index": "7",
+      "startSample": "01:25:53.7250000",
+      "endSample": "01:27:31.5190000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/07.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/07.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_07.png",
+      "ccaptions": null
+    },
+    {
+      "title": "Ballade n°4 en fa mineur op.52 , Frédéric Chopin",
+      "start": "01:33:28.9250000",
+      "end": "01:45:55.3690000",
+      "index": "8",
+      "startSample": "01:34:02.0110000",
+      "endSample": "01:35:36.6830000",
+      "files": {
+        "desktop": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/08.m3u8"
+        },
+        "mobile": {
+          "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1152184/08.m3u8"
+        }
+      },
+      "thumbnail": "https://cdn.philharmoniedeparis.fr/http/images/vignette/PPVI000325401_08.png",
+      "ccaptions": null
+    }
+  ],
+  "files": null,
+  "quality_labels": [
+    {
+      "bandwidth": 1600,
+      "label": {
+        "fr": "Haute définition",
+        "en": "High quality"
+      }
+    },
+    {
+      "bandwidth": 1000,
+      "label": {
+        "fr": "Standard",
+        "en": "Medium quality"
+      }
+    },
+    {
+      "bandwidth": 320,
+      "label": {
+        "fr": "Basse définition",
+        "en": "Low quality"
+      }
+    },
+    {
+      "bandwidth": 256,
+      "label": {
+        "fr": "Audio seulement",
+        "en": "Audio only"
+      }
+    }
+  ],
+  "embed": {
+    "active": true,
+    "url": "https://otoplayer.philharmoniedeparis.fr/embed/1152184/lucas-debargue-mozart-chopin-alkan.html",
+    "iframe": "https://otoplayer.philharmoniedeparis.fr/embed/1152184/lucas-debargue-mozart-chopin-alkan.html"
+  },
+  "reload_interval": 0,
+  "skin": {
+    "name": "live",
+    "url": "//otoplayer.philharmoniedeparis.fr/content/jw-player-skin/styles.css"
+  },
+  "ccaptions": null,
+  "flags": null,
+  "message": null,
+  "stream": null
+}

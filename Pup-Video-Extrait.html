@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pup-Video-Extrait</title>
+
+    <script src="https://cdn.jwplayer.com/libraries/yv750rlh.js"></script>
+    <link
+      href="https://pup.philharmoniedeparis.fr/puplayer.css"
+      type="text/css"
+      rel="stylesheet"
+    />
+    <script src="https://pup.philharmoniedeparis.fr/puplayer.umd.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        font-family: "SourceSansPro-Regular", "Arial", "Helvetica", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="player"></div>
+
+    <script>
+      const player = PUPlayer.create(
+        // container
+        document.querySelector("#player"),
+        // theme
+        "PPLive",
+        {
+          type: "http",
+          url: "https://otoplayer.philharmoniedeparis.fr/fr/config/1152184.json",
+          denebUrl:
+            "https://deneb.philharmoniedeparis.fr/apiplayer/video/1152184", // optional to get extra chapters data
+          embedded: false,
+        }
+      );
+    </script>
+  </body>
+</html>

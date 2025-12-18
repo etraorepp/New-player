@@ -1,0 +1,303 @@
+{
+  "concert_id": "1191600",
+  "video_type": "Live",
+  "language": "fr",
+  "localization": null,
+  "autorized": false,
+  "ip": "192.168.22.10 -  - https://cdn.philharmoniedeparis.fr/http/",
+  "date_start": "2025-10-04T20:00+02:00",
+  "date_end": "2025-10-04T23:59+02:00",
+  "date_available": "04/03/2026 23:59",
+  "title": "La Messagère - Lucile Boulanger : Demachy, Hersant, Hotman, Marais, Sainte-Colombe, Sinnhuber, Pesson",
+  "recorded": "Concert enregistré à la Philharmonie de Paris (Amphithéâtre - Cité de la musique) le 04 octobre 2025",
+  "broadcasted": "",
+  "mention": null,
+  "tagline": null,
+  "courtesy": null,
+  "image": "https://cdn.philharmoniedeparis.fr/http/images/poster/PPVI000348500.png",
+  "aspectratio": "16:9",
+  "mode": "vod",
+  "mode_name": "Intégral",
+  "startTrack": "0",
+  "composers": [
+    {
+      "name": "Hotman Nicolas",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Hersant Philippe",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Sinnhuber Claire-Mélanie",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Sainte-Colombe Jean de",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Marais Marin",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Pesson Gérard",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Demachy ",
+      "concerts": null,
+      "link": null
+    },
+    {
+      "name": "Bocquet Mademoiselle",
+      "concerts": null,
+      "link": null
+    }
+  ],
+  "performers": [
+    {
+      "name": "Boulanger Lucile",
+      "concerts": null,
+      "link": null
+    }
+  ],
+  "chaptersfile": "https://otoplayer.philharmoniedeparis.fr/fr/vtt/1191600.vtt",
+  "thumbnailsfile": "https://otoplayer.philharmoniedeparis.fr/fr/thumbnails/1191600.vtt",
+  "chapters": [
+    {
+      "title": "Suite en ré mineur (Manuscrit de Cracovie) , Nicolas Hotman",
+      "start": "00:00:00",
+      "end": "00:12:47.4700000",
+      "index": "1",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "L\u0027Ombre d\u0027un doute : 1. Fanfare , Philippe Hersant",
+      "start": "00:12:47.4700000",
+      "end": "00:14:14.4200000",
+      "index": "2",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "La Dame d\u0027onze heures , Claire-Mélanie Sinnhuber",
+      "start": "00:14:14.4200000",
+      "end": "00:25:24.8730000",
+      "index": "3",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "L\u0027Ombre d\u0027un doute : 2. La Messagère , Philippe Hersant",
+      "start": "00:25:24.8730000",
+      "end": "00:27:04.0570000",
+      "index": "4",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Suite en ré mineur (Manuscrit de Tournus, v. 1690) , Jean de Sainte-Colombe",
+      "start": "00:27:04.0570000",
+      "end": "00:39:38.7970000",
+      "index": "5",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Pièces à une et trois violes, Quatrième Livre (1717) : L\u0027Arabesque , Marin Marais",
+      "start": "00:39:38.7970000",
+      "end": "00:44:13.3430000",
+      "index": "6",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "L\u0027Ombre d\u0027un doute : 3. Les Ombres , Philippe Hersant",
+      "start": "00:44:13.3430000",
+      "end": "00:45:43.1540000",
+      "index": "7",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "La Fugitive , Philippe Hersant",
+      "start": "00:45:43.1540000",
+      "end": "00:55:50.4250000",
+      "index": "8",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "L\u0027Ombre d\u0027un doute : 4. La Harpe d\u0027Orphée , Philippe Hersant",
+      "start": "00:55:50.4250000",
+      "end": "00:57:10.2850000",
+      "index": "9",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Pièces de viole : 1. Prélude ,  Demachy",
+      "start": "00:57:10.2850000",
+      "end": "00:58:28.7740000",
+      "index": "10",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Pièces à une et deux violes, Premier Livre : Allemande, Sarabande, Gigue , Marin Marais",
+      "start": "00:58:28.7740000",
+      "end": "01:04:10.0530000",
+      "index": "11",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Pièces de viole : 5. Gavotte en rondeau en sol majeur ,  Demachy",
+      "start": "01:04:10.0530000",
+      "end": "01:06:08.7980000",
+      "index": "12",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "L\u0027Ombre d\u0027un doute : 5. Les Esprits , Philippe Hersant",
+      "start": "01:06:08.7980000",
+      "end": "01:07:17.0150000",
+      "index": "13",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Pièces à une et deux violes, Premier Livre : Chaconne , Marin Marais",
+      "start": "01:07:17.0150000",
+      "end": "01:15:21.8110000",
+      "index": "14",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Rappel : Prélude , Mademoiselle Bocquet",
+      "start": "01:15:21.8110000",
+      "end": "01:18:20.8460000",
+      "index": "15",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    },
+    {
+      "title": "Rappel : L\u0027Ombre d\u0027un doute : 2. La Messagère  , Philippe Hersant",
+      "start": "01:18:20.8460000",
+      "end": "01:21:40.3730000",
+      "index": "16",
+      "startSample": null,
+      "endSample": null,
+      "files": null,
+      "thumbnail": null,
+      "ccaptions": null
+    }
+  ],
+  "files": {
+    "desktop": {
+      "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1191600.m3u8"
+    },
+    "mobile": {
+      "file": "https://otoplayer.philharmoniedeparis.fr/fr/m3u8/1191600.m3u8"
+    }
+  },
+  "quality_labels": [
+    {
+      "bandwidth": 1600,
+      "label": {
+        "fr": "Haute définition",
+        "en": "High quality"
+      }
+    },
+    {
+      "bandwidth": 1000,
+      "label": {
+        "fr": "Standard",
+        "en": "Medium quality"
+      }
+    },
+    {
+      "bandwidth": 320,
+      "label": {
+        "fr": "Basse définition",
+        "en": "Low quality"
+      }
+    },
+    {
+      "bandwidth": 256,
+      "label": {
+        "fr": "Audio seulement",
+        "en": "Audio only"
+      }
+    }
+  ],
+  "embed": {
+    "active": true,
+    "url": "https://otoplayer.philharmoniedeparis.fr/fr/embed/1191600",
+    "iframe": "https://otoplayer.philharmoniedeparis.fr/fr/embed/1191600"
+  },
+  "reload_interval": 0,
+  "skin": {
+    "name": "live",
+    "url": "//otoplayer.philharmoniedeparis.fr/content/jw-player-skin/styles.css"
+  },
+  "ccaptions": [  ],
+  "flags": null,
+  "message": null,
+  "stream": null
+}
