@@ -33,6 +33,13 @@ New-player/
 
 Convertit un temps au format `"HH:MM:SS.mmm"` en secondes.
 
+Le fichier JSON stocke les temps au format lisible `"HH:MM:SS.mmm"` (ex: `"01:23:45.500"`), mais **JWPlayer ne comprend que les secondes**.
+
+**Cas d'utilisation :**
+- `jwplayer().seek(secondes)` → naviguer à un moment précis dans la vidéo
+- `jwplayer().on('time', e => e.position)` → la position actuelle est retournée en secondes
+- Comparer si le temps actuel est dans la plage d'un chapitre
+
 ```javascript
 function timeToSeconds(timeStr) {
   if (!timeStr) return 0;                    // Si pas de valeur, retourne 0
@@ -41,7 +48,13 @@ function timeToSeconds(timeStr) {
 }
 ```
 
-**Exemple :** `"01:23:45.500"` → `5025.5` secondes
+**Détail du calcul :**
+
+Pour `"01:23:45.500"` :
+- `h = "01"` → 1 heure = 1 × 3600 = **3600 secondes**
+- `m = "23"` → 23 minutes = 23 × 60 = **1380 secondes**
+- `s = "45.500"` → **45.5 secondes**
+- Total : 3600 + 1380 + 45.5 = **5025.5 secondes**
 
 ---
 
