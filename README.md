@@ -27,6 +27,17 @@ New-player/
 
 ---
 
+## Modes de lecture
+
+| Mode | Vidéo | Navigation | Événement écouté |
+|------|-------|------------|------------------|
+| **Intégral** | 1 seule vidéo | `seek(secondes)` | `time` |
+| **Extrait** | 1 vidéo par chapitre | `playlistItem(index)` | `playlistItem` |
+
+Le mode est détecté automatiquement via `data.mode === 'sample'` dans le JSON.
+
+---
+
 ## Explication du script (`js/script.js`)
 
 ### 1. `timeToSeconds(timeStr)`
@@ -116,15 +127,17 @@ li.innerHTML = `
 
 #### Étape 4 : Gérer le clic
 
+Quand l'utilisateur clique sur un chapitre, la navigation dépend du mode :
+- **Extrait** : on change de vidéo → `playlistItem(i)`
+- **Intégral** : on saute dans la même vidéo → `seek(secondes)`
+
 ```javascript
 li.onclick = () => {
   if (window.jwplayer) {
     if (isExtrait) {
-      // Mode Extrait : changer de piste (chaque chapitre = vidéo séparée)
-      jwplayer().playlistItem(i);
+      jwplayer().playlistItem(i);   // Change de vidéo
     } else {
-      // Mode Intégral : seek dans la vidéo unique
-      jwplayer().seek(startSec);
+      jwplayer().seek(startSec);    // Saute au timecode
     }
   }
   list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));  // Retire "active" de tous
