@@ -30,7 +30,7 @@ function loadProgram(configUrl) {
           <span class="index">${chapter.index || i + 1}.</span>
           <div class="content">
             ${composer ? `<div class="composer">${composer}</div>
-            <div class="title">${title}</div>` : ''}
+            <div class="title">${title}</div>` : `<div class="title">${chapter.title}</div>`}
           </div>
           <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
         `;

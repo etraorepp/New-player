@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pup-Conference</title>
+
+    <script src="https://cdn.jwplayer.com/libraries/yv750rlh.js"></script>
+    <link
+      href="https://pup.philharmoniedeparis.fr/puplayer.css"
+      type="text/css"
+      rel="stylesheet"
+    />
+    <script src="https://pup.philharmoniedeparis.fr/puplayer.umd.js"></script>
+
+    <!-- CSS Programme -->
+    <link href="css/style.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="player"></div>
+
+    <!-- Section Programme -->
+    <div id="program-section">
+      <div id="program-header">
+        <h2>Programme</h2>
+      </div>
+      <ul id="program-list"></ul>
+    </div>
+
+    <!-- JS Programme -->
+    <script>
+      // ==========================================
+      // CONFIGURATION
+      // ==========================================
+      // Changez l'ID Syracuse ici pour charger une autre conférence
+      const syracuseId = "82378";
+      
+      // URLs des APIs (via proxy local pour éviter CORS)
+      const API_JSON = '/api/json';
+      const API_XML = '/api/xml';
+      
+      // ==========================================
+      // FONCTIONS UTILITAIRES
+      // ==========================================
+      
+      function secondsToTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = (seconds % 60).toFixed(7);
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${s.padStart(10, '0')}`;
+      }
+      
+      function formatDate(dateStr) {
+        if (!dateStr || dateStr.length !== 8) return null;
+        const year = dateStr.substring(0, 4);
+        const month = dateStr.substring(4, 6);
+        const day = dateStr.substring(6, 8);
+        return `${year}-${month}-${day}T00:00+02:00`;
+      }
+      
+      function timeToSeconds(timeStr) {
+        if (!timeStr) return 0;
+        const [h, m, s] = timeStr.split(':');
+        return (+h * 3600) + (+m * 60) + parseFloat(s);
+      }
+      
+      function formatDuration(start, end) {
+        const dur = Math.round(timeToSeconds(end) - timeToSeconds(start));
+        return `${Math.floor(dur / 60)}:${(dur % 60).toString().padStart(2, '0')}`;
+      }
+      
+      // ==========================================
+      // APPELS API
+      // ==========================================
+      
+      async function fetchConferenceData(id) {
+        const url = `${API_JSON}/${id}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+      }
+      
+      async function fetchPlaylistStructure(id) {
+        const url = `${API_XML}/${id}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const xmlText = await response.text();
+        return parsePlaylistXML(xmlText);
+      }
+      
+      // ==========================================
+      // PARSING XML
+      // ==========================================
+      
+      function parsePlaylistXML(xmlText) {
+        const structure = {
+          parent: null,
+          childs: []
+        };
+        
+        const parentMatch = xmlText.match(/<parent\s+tcin="([^"]+)"\s+tcout="([^"]+)">/);
+        if (parentMatch) {
+          structure.parent = {
+            tcin: parseFloat(parentMatch[1]),
+            tcout: parseFloat(parentMatch[2])
+          };
+        }
+        
+        const childRegex = /<child\s+tcin="([^"]+)"\s+tcout="([^"]+)">[\s\S]*?<id[^>]*>(\d+)<\/id>([\s\S]*?)<\/child>/g;
+        let childMatch;
+        
+        while ((childMatch = childRegex.exec(xmlText)) !== null) {
+          const child = {
+            id: childMatch[3],
+            tcin: parseFloat(childMatch[1]),
+            tcout: parseFloat(childMatch[2]),
+            subchilds: []
+          };
+          
+          const subchildRegex = /<subchild\s+tcin="([^"]+)"\s+tcout="([^"]+)">[\s\S]*?<id[^>]*>(\d+)<\/id>/g;
+          let subchildMatch;
+          
+          while ((subchildMatch = subchildRegex.exec(childMatch[4])) !== null) {
+            child.subchilds.push({
+              id: subchildMatch[3],
+              tcin: parseFloat(subchildMatch[1]),
+              tcout: parseFloat(subchildMatch[2])
+            });
+          }
+          
+          structure.childs.push(child);
+        }
+        
+        return structure;
+      }
+      
+      // ==========================================
+      // CONSTRUCTION DE LA CONFIGURATION
+      // ==========================================
+      
+      function extractCreators(data) {
+        const creators = [];
+        if (data.creator) creators.push({ name: data.creator, concerts: null, link: null });
+        if (data.contributors) {
+          data.contributors.forEach(contrib => {
+            creators.push({ name: contrib, concerts: null, link: null });
+          });
+        }
+        return creators;
+      }
+      
+      function extractPerformers(data) {
+        const performers = [];
+        if (data.speakers) {
+          data.speakers.forEach(speaker => {
+            performers.push({ name: speaker, concerts: null, link: null });
+          });
+        }
+        return performers;
+      }
+      
+      async function buildConfig(parentData, playlistStructure) {
+        const chapters = [];
+        let mainChapterIndex = 1;  // Index pour les chapitres principaux (parents + simples)
+        
+        if (playlistStructure && playlistStructure.childs.length > 0) {
+          for (const child of playlistStructure.childs) {
+            // Récupérer les données du child
+            const childData = await fetchConferenceData(child.id);
+            
+            if (child.subchilds.length > 0) {
+              // Child avec subchilds : ajouter un titre de section + les subchilds
+              chapters.push({
+                title: childData?.title || `Section ${mainChapterIndex}`,
+                start: secondsToTime(child.tcin),
+                end: secondsToTime(child.tcout),
+                index: String(mainChapterIndex),  // Numérotation principale
+                isParent: true,  // Marqueur pour le parent
+                childId: child.id,
+                subchildCount: child.subchilds.length
+              });
+              mainChapterIndex++;  // Incrémenter seulement pour le parent
+              
+              // Ajouter les subchilds avec numérotation indépendante (1, 2, 3, 4...)
+              let subchildIndex = 1;
+              for (const subchild of child.subchilds) {
+                const subchildData = await fetchConferenceData(subchild.id);
+                if (subchildData) {
+                  chapters.push({
+                    title: subchildData.title || `Sous-chapitre ${subchildIndex}`,
+                    start: secondsToTime(subchild.tcin),
+                    end: secondsToTime(subchild.tcout),
+                    index: String(subchildIndex),  // Numérotation indépendante (1, 2, 3...)
+                    isChild: true,  // Marqueur pour le subchild
+                    parentId: child.id
+                  });
+                  subchildIndex++;
+                }
+              }
+            } else {
+              // Pas de subchilds, créer un chapitre simple
+              if (childData) {
+                chapters.push({
+                  title: childData.title || `Chapitre ${mainChapterIndex}`,
+                  start: secondsToTime(child.tcin),
+                  end: secondsToTime(child.tcout),
+                  index: String(mainChapterIndex),  // Numérotation principale
+                  isParent: false,
+                  isChild: false
+                });
+                mainChapterIndex++;  // Incrémenter pour le chapitre simple
+              }
+            }
+          }
+        } else if (parentData.children && parentData.children.length > 0) {
+          // Fallback: utiliser les children de l'API JSON
+          for (let i = 0; i < parentData.children.length; i++) {
+            const childData = await fetchConferenceData(parentData.children[i]);
+            if (childData) {
+              chapters.push({
+                title: childData.title || `Chapitre ${i + 1}`,
+                start: secondsToTime(childData.tcin || 0),
+                end: secondsToTime(childData.tcout || 0),
+                index: String(i + 1),
+                isParent: false,
+                isChild: false
+              });
+            }
+          }
+        } else {
+          // Dernier recours: un seul chapitre
+          chapters.push({
+            title: parentData.title,
+            start: "00:00:00.0000000",
+            end: secondsToTime(parentData.duration || 0),
+            index: "1",
+            isParent: false,
+            isChild: false
+          });
+        }
+        
+        return {
+          concert_id: syracuseId,
+          video_type: "Conference",
+          language: "fr",
+          title: parentData.title || "Sans titre",
+          recorded: parentData.subtitle || "",
+          date_start: parentData.date ? formatDate(parentData.date) : null,
+          mode: "vod",
+          mode_name: "Intégral",
+          startTrack: "0",
+          composers: extractCreators(parentData),
+          performers: extractPerformers(parentData),
+          chapters: chapters,
+          files: {
+            desktop: { file: parentData.stream || parentData.fileOnCdn },
+            mobile: { file: parentData.stream || parentData.fileOnCdn }
+          },
+          quality_labels: [{ bandwidth: 256, label: { fr: "Audio seulement", en: "Audio only" }}]
+        };
+      }
+      
+      // ==========================================
+      // AFFICHAGE DU PROGRAMME
+      // ==========================================
+      
+      function loadProgramFromConfig(config) {
+        const list = document.getElementById('program-list');
+        
+        config.chapters.forEach((chapter, i) => {
+          const startSec = timeToSeconds(chapter.start);
+          const li = document.createElement('li');
+          
+          // Appliquer la classe appropriée selon le type
+          if (chapter.isParent) {
+            li.className = 'program-item parent-item';
+            li.setAttribute('data-parent-id', chapter.childId);
+          } else if (chapter.isChild) {
+            li.className = 'program-item child-item';
+            li.setAttribute('data-parent-id', chapter.parentId);
+          } else {
+            li.className = 'program-item';
+          }
+          
+          // Pour les parents, afficher différemment (dépliable)
+          if (chapter.isParent) {
+            li.innerHTML = `
+              <span class="index parent-index">
+                <span class="toggle-icon">▼</span> ${chapter.index}.
+              </span>
+              <div class="content">
+                <div class="title parent-title">${chapter.title}</div>
+                <div class="subtitle">${chapter.subchildCount} sous-chapitre${chapter.subchildCount > 1 ? 's' : ''}</div>
+              </div>
+              <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
+            `;
+            
+            // Clic sur le parent : toggle les enfants
+            li.onclick = (e) => {
+              e.stopPropagation();
+              const parentId = chapter.childId;
+              const isCollapsed = li.classList.toggle('collapsed');
+              
+              // Changer l'icône
+              const toggleIcon = li.querySelector('.toggle-icon');
+              toggleIcon.textContent = isCollapsed ? '▶' : '▼';
+              
+              // Masquer/afficher les enfants
+              const children = list.querySelectorAll(`[data-parent-id="${parentId}"].child-item`);
+              children.forEach(child => {
+                child.style.display = isCollapsed ? 'none' : 'flex';
+              });
+            };
+            
+          } else if (chapter.isChild) {
+            // Vérifier si c'est le dernier enfant du groupe
+            const isLastChild = i === config.chapters.length - 1 || 
+                               !config.chapters[i + 1].isChild ||
+                               config.chapters[i + 1].parentId !== chapter.parentId;
+            const treeSymbol = isLastChild ? '└─' : '├─';
+            
+            li.innerHTML = `
+              <span class="index child-index">${treeSymbol} ${chapter.index}.</span>
+              <div class="content">
+                <div class="title child-title">${chapter.title}</div>
+              </div>
+              <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
+            `;
+            
+            // Clic sur un subchild : lancer la lecture
+            li.onclick = () => {
+              if (window.jwplayer) {
+                jwplayer().seek(startSec);
+              }
+              list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+              li.classList.add('active');
+            };
+            
+          } else {
+            li.innerHTML = `
+              <span class="index">${chapter.index}.</span>
+              <div class="content">
+                <div class="title">${chapter.title}</div>
+              </div>
+              <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
+            `;
+            
+            // Clic sur un chapitre simple : lancer la lecture
+            li.onclick = () => {
+              if (window.jwplayer) {
+                jwplayer().seek(startSec);
+              }
+              list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+              li.classList.add('active');
+            };
+          }
+          
+          list.appendChild(li);
+        });
+        
+        // Mise à jour du chapitre actif pendant la lecture
+        setTimeout(() => {
+          if (window.jwplayer) {
+            jwplayer().on('time', e => {
+              const items = list.children;
+              for (let i = 0; i < items.length; i++) {
+                const start = timeToSeconds(config.chapters[i].start);
+                const end = config.chapters[i + 1] ? timeToSeconds(config.chapters[i + 1].start) : Infinity;
+                items[i].classList.toggle('active', e.position >= start && e.position < end);
+              }
+            });
+          }
+        }, 2000);
+      }
+      
+      // ==========================================
+      // CHARGEMENT PRINCIPAL
+      // ==========================================
+      
+      async function loadConference() {
+        try {
+          console.log('Chargement de la conférence', syracuseId);
+          
+          // Récupérer les données
+          console.log('Récupération des métadonnées...');
+          const parentData = await fetchConferenceData(syracuseId);
+          
+          console.log('Récupération de la structure...');
+          const playlistStructure = await fetchPlaylistStructure(syracuseId);
+          
+          // Construire la configuration
+          console.log('Construction de la configuration...');
+          const config = await buildConfig(parentData, playlistStructure);
+          
+          // Afficher un résumé de la structure
+          const parentCount = config.chapters.filter(c => c.isParent).length;
+          const childCount = config.chapters.filter(c => c.isChild).length;
+          const simpleCount = config.chapters.filter(c => !c.isParent && !c.isChild).length;
+          
+          console.log('Configuration créée:');
+          console.log(`  Total: ${config.chapters.length} chapitres`);
+          if (parentCount > 0) console.log(`  Sections: ${parentCount}`);
+          if (childCount > 0) console.log(`  Sous-chapitres: ${childCount}`);
+          if (simpleCount > 0) console.log(`  Chapitres simples: ${simpleCount}`);
+          
+          // Créer un Blob URL pour la config
+          const configBlob = new Blob([JSON.stringify(config)], { type: 'application/json' });
+          const configUrl = URL.createObjectURL(configBlob);
+          
+          // Créer le player
+          const player = PUPlayer.create(
+            document.querySelector("#player"),
+            "PPLive",
+            {
+              type: "http",
+              url: configUrl,
+              embedded: false,
+            }
+          );
+          
+          // Charger le programme
+          loadProgramFromConfig(config);
+          
+        } catch (error) {
+          console.error('Erreur:', error);
+          document.getElementById('program-list').innerHTML = 
+            '<li style="color: red; padding: 20px;">Erreur lors du chargement: ' + error.message + '</li>';
+        }
+      }
+      
+      // Lancer le chargement
+      loadConference();
+    </script>
+  </body>
+</html>

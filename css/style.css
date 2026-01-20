@@ -89,6 +89,51 @@ body {
   color: #666;
 }
 
+/* Styles pour la hiérarchie parent/child */
+.program-item.parent-item {
+  font-weight: 500;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.program-item.parent-item .subtitle {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.program-item.parent-item .toggle-icon {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.program-item.child-item {
+  padding-left: 30px;
+}
+
+.program-item.child-item.hiding {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.program-item.child-item .child-index {
+  color: #666;
+  font-family: monospace;
+  min-width: 50px;
+}
+
+.program-item.child-item .child-title {
+  color: #999;
+  font-size: 0.95rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   #program-section {

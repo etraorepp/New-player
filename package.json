@@ -1,0 +1,13 @@
+{
+  "name": "conference-player",
+  "version": "1.0.0",
+  "description": "Lecteur de conférences avec proxy CORS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["conference", "audio", "puplayer"],
+  "author": "",
+  "license": "ISC"
+}
