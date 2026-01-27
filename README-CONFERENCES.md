@@ -71,6 +71,92 @@ La page construit automatiquement :
 - Les métadonnées (titre, date, intervenants)
 - Le lecteur audio PUPlayer
 
+### Détails du code `Pup-Conference.html`
+
+Le fichier est organisé en sections clairement délimitées (~416 lignes) :
+
+#### 1. Configuration (lignes 34-42)
+```javascript
+const syracuseId = "82378";  // ID de la conférence à charger
+const API_JSON = '/api/json';  // Endpoint pour métadonnées
+const API_XML = '/api/xml';    // Endpoint pour structure hiérarchique
+```
+
+#### 2. Fonctions utilitaires (lignes 45-72)
+- `secondsToTime()` : Convertit secondes → format temps PUPlayer (HH:MM:SS.sssssss)
+- `formatDate()` : Format YYYYMMDD → ISO 8601
+- `timeToSeconds()` : Format temps → secondes
+- `formatDuration()` : Calcule et formate la durée (MM:SS)
+
+#### 3. Appels API (lignes 75-91)
+- `fetchConferenceData(id)` : Récupère les métadonnées JSON d'un ID
+- `fetchPlaylistStructure(id)` : Récupère et parse la structure XML
+
+#### 4. Parsing XML (lignes 94-125)
+- `parsePlaylistXML(xmlText)` : Extrait childs et subchilds avec regex
+  - Regex childs : trouve tous les `<child>` avec timecodes et ID
+  - Regex subchilds : trouve tous les `<subchild>` dans chaque child
+  - Retourne un tableau structuré : `[{ id, tcin, tcout, subchilds: [...] }]`
+
+#### 5. Construction de configuration (lignes 128-239)
+- `extractNames(data, ...keys)` : Extrait noms de créateurs/intervenants
+  - Gère tableaux ou valeurs simples
+  - Unifie `creator`, `contributors`, `speakers`
+  
+- `buildConfig(parentData, playlistStructure)` : Génère la config PUPlayer
+  - **Logique de numérotation** :
+    - `mainChapterIndex` : compteur pour chapitres principaux (1, 2, 3...)
+    - `subchildIndex` : réinitialisé pour chaque section (1, 2, 3...)
+  - **Traitement par type** :
+    - Child avec subchilds → section parent + sous-chapitres
+    - Child sans subchilds → chapitre simple
+  - **Fallbacks** : XML indisponible → utilise children JSON → titre seul
+  - **Retourne** : objet config complet (titre, chapitres, fichiers, métadonnées)
+
+#### 6. Affichage du programme (lignes 242-354)
+- `handleChapterClick(startSec, element, list)` : Gère clic sur chapitre
+  - Seek dans le player
+  - Met à jour la classe `active`
+  
+- `isLastChild(chapters, index)` : Détecte le dernier enfant d'un groupe
+  - Utilisé pour choisir le symbole (├─ ou └─)
+  
+- `loadProgramFromConfig(config)` : Génère l'interface HTML
+  - Affiche le titre de la conférence
+  - Parcourt les chapitres et crée les `<li>` selon le type :
+    - **Parent** : toggle icon (▼/▶), sous-titre avec compte, onclick = toggle
+    - **Child** : indentation, symbole arbre (├─/└─), onclick = lecture
+    - **Simple** : affichage standard, onclick = lecture
+  - Écoute l'événement `time` du player pour mettre à jour le chapitre actif
+
+#### 7. Chargement principal (lignes 357-412)
+- `loadConference()` : Fonction asynchrone orchestrant tout
+  1. Récupère métadonnées (API JSON)
+  2. Récupère structure (API XML)
+  3. Construit la configuration
+  4. Log le résumé (total, sections, sous-chapitres, simples)
+  5. Crée un Blob URL pour la config
+  6. Initialise PUPlayer avec cette URL
+  7. Charge le programme dans l'interface
+  8. Gère les erreurs et les affiche
+
+**Flux d'exécution** :
+```
+Page chargée
+  → loadConference()
+    → fetchConferenceData(syracuseId) via proxy
+    → fetchPlaylistStructure(syracuseId) via proxy
+      → parsePlaylistXML()
+    → buildConfig()
+      → Pour chaque child/subchild : fetchConferenceData()
+      → Construit tableau chapters avec flags isParent/isChild
+    → Créer Blob URL
+    → PUPlayer.create()
+    → loadProgramFromConfig()
+      → Génère HTML pour chaque chapitre
+      → Attache événements onclick et time
+```
+
 ## Configuration automatique des chapitres
 
 Le système crée les chapitres intelligemment avec une hiérarchie visuelle :
@@ -158,26 +244,3 @@ Configuration créée:
   Sous-chapitres: 15
   Chapitres simples: 2
 ```
-
-## Structure du projet
-
-```
-New-player/
-├── Pup-Conference.html       ← Lecteur de conférences (dynamique)
-├── Pup-Video-Integral.html   ← Lecteur vidéo intégral
-├── Pup-Video-Extrait.html    ← Lecteur vidéo extraits
-├── server.js                 ← Serveur proxy pour éviter CORS
-├── package.json              ← Configuration npm
-├── ListOfSyracuseIds.txt     ← Liste des 589 IDs disponibles
-├── css/
-│   └── style.css             ← Styles (hiérarchie, sections dépliables)
-└── js/
-    └── script.js             ← Fonctions communes
-```
-
-## Raccourcis clavier
-
-- **Clic sur section** : Déplier/replier les sous-chapitres
-- **Clic sur sous-chapitre** : Lancer la lecture à ce moment
-- **F12** : Ouvrir la console de débogage
-- **Ctrl + C** (dans le terminal) : Arrêter le serveur
