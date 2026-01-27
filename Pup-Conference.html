@@ -95,19 +95,7 @@
       // ==========================================
       
       function parsePlaylistXML(xmlText) {
-        const structure = {
-          parent: null,
-          childs: []
-        };
-        
-        const parentMatch = xmlText.match(/<parent\s+tcin="([^"]+)"\s+tcout="([^"]+)">/);
-        if (parentMatch) {
-          structure.parent = {
-            tcin: parseFloat(parentMatch[1]),
-            tcout: parseFloat(parentMatch[2])
-          };
-        }
-        
+        const childs = [];
         const childRegex = /<child\s+tcin="([^"]+)"\s+tcout="([^"]+)">[\s\S]*?<id[^>]*>(\d+)<\/id>([\s\S]*?)<\/child>/g;
         let childMatch;
         
@@ -130,43 +118,35 @@
             });
           }
           
-          structure.childs.push(child);
+          childs.push(child);
         }
         
-        return structure;
+        return childs;
       }
       
       // ==========================================
       // CONSTRUCTION DE LA CONFIGURATION
       // ==========================================
       
-      function extractCreators(data) {
-        const creators = [];
-        if (data.creator) creators.push({ name: data.creator, concerts: null, link: null });
-        if (data.contributors) {
-          data.contributors.forEach(contrib => {
-            creators.push({ name: contrib, concerts: null, link: null });
-          });
-        }
-        return creators;
-      }
-      
-      function extractPerformers(data) {
-        const performers = [];
-        if (data.speakers) {
-          data.speakers.forEach(speaker => {
-            performers.push({ name: speaker, concerts: null, link: null });
-          });
-        }
-        return performers;
+      function extractNames(data, ...keys) {
+        const names = [];
+        keys.forEach(key => {
+          const value = data[key];
+          if (Array.isArray(value)) {
+            value.forEach(item => names.push({ name: item, concerts: null, link: null }));
+          } else if (value) {
+            names.push({ name: value, concerts: null, link: null });
+          }
+        });
+        return names;
       }
       
       async function buildConfig(parentData, playlistStructure) {
         const chapters = [];
         let mainChapterIndex = 1;  // Index pour les chapitres principaux (parents + simples)
         
-        if (playlistStructure && playlistStructure.childs.length > 0) {
-          for (const child of playlistStructure.childs) {
+        if (playlistStructure && playlistStructure.length > 0) {
+          for (const child of playlistStructure) {
             // Récupérer les données du child
             const childData = await fetchConferenceData(child.id);
             
@@ -176,8 +156,8 @@
                 title: childData?.title || `Section ${mainChapterIndex}`,
                 start: secondsToTime(child.tcin),
                 end: secondsToTime(child.tcout),
-                index: String(mainChapterIndex),  // Numérotation principale
-                isParent: true,  // Marqueur pour le parent
+                index: String(mainChapterIndex),
+                isParent: true,
                 childId: child.id,
                 subchildCount: child.subchilds.length
               });
@@ -192,8 +172,8 @@
                     title: subchildData.title || `Sous-chapitre ${subchildIndex}`,
                     start: secondsToTime(subchild.tcin),
                     end: secondsToTime(subchild.tcout),
-                    index: String(subchildIndex),  // Numérotation indépendante (1, 2, 3...)
-                    isChild: true,  // Marqueur pour le subchild
+                    index: String(subchildIndex),
+                    isChild: true,
                     parentId: child.id
                   });
                   subchildIndex++;
@@ -206,7 +186,7 @@
                   title: childData.title || `Chapitre ${mainChapterIndex}`,
                   start: secondsToTime(child.tcin),
                   end: secondsToTime(child.tcout),
-                  index: String(mainChapterIndex),  // Numérotation principale
+                  index: String(mainChapterIndex),
                   isParent: false,
                   isChild: false
                 });
@@ -223,9 +203,7 @@
                 title: childData.title || `Chapitre ${i + 1}`,
                 start: secondsToTime(childData.tcin || 0),
                 end: secondsToTime(childData.tcout || 0),
-                index: String(i + 1),
-                isParent: false,
-                isChild: false
+                index: String(i + 1)
               });
             }
           }
@@ -235,9 +213,7 @@
             title: parentData.title,
             start: "00:00:00.0000000",
             end: secondsToTime(parentData.duration || 0),
-            index: "1",
-            isParent: false,
-            isChild: false
+            index: "1"
           });
         }
         
@@ -251,8 +227,8 @@
           mode: "vod",
           mode_name: "Intégral",
           startTrack: "0",
-          composers: extractCreators(parentData),
-          performers: extractPerformers(parentData),
+          composers: extractNames(parentData, 'creator', 'contributors'),
+          performers: extractNames(parentData, 'speakers'),
           chapters: chapters,
           files: {
             desktop: { file: parentData.stream || parentData.fileOnCdn },
@@ -265,6 +241,20 @@
       // ==========================================
       // AFFICHAGE DU PROGRAMME
       // ==========================================
+      
+      function handleChapterClick(startSec, element, list) {
+        if (window.jwplayer) {
+          jwplayer().seek(startSec);
+        }
+        list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+      }
+      
+      function isLastChild(chapters, index) {
+        return index === chapters.length - 1 || 
+               !chapters[index + 1].isChild ||
+               chapters[index + 1].parentId !== chapters[index].parentId;
+      }
       
       function loadProgramFromConfig(config) {
         const list = document.getElementById('program-list');
@@ -321,11 +311,7 @@
             };
             
           } else if (chapter.isChild) {
-            // Vérifier si c'est le dernier enfant du groupe
-            const isLastChild = i === config.chapters.length - 1 || 
-                               !config.chapters[i + 1].isChild ||
-                               config.chapters[i + 1].parentId !== chapter.parentId;
-            const treeSymbol = isLastChild ? '└─' : '├─';
+            const treeSymbol = isLastChild(config.chapters, i) ? '└─' : '├─';
             
             li.innerHTML = `
               <span class="index child-index">${treeSymbol} ${chapter.index}.</span>
@@ -335,14 +321,7 @@
               <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
             `;
             
-            // Clic sur un subchild : lancer la lecture
-            li.onclick = () => {
-              if (window.jwplayer) {
-                jwplayer().seek(startSec);
-              }
-              list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
-              li.classList.add('active');
-            };
+            li.onclick = () => handleChapterClick(startSec, li, list);
             
           } else {
             li.innerHTML = `
@@ -353,14 +332,7 @@
               <span class="duration">${formatDuration(chapter.start, chapter.end)}</span>
             `;
             
-            // Clic sur un chapitre simple : lancer la lecture
-            li.onclick = () => {
-              if (window.jwplayer) {
-                jwplayer().seek(startSec);
-              }
-              list.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
-              li.classList.add('active');
-            };
+            li.onclick = () => handleChapterClick(startSec, li, list);
           }
           
           list.appendChild(li);

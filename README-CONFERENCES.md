@@ -26,6 +26,8 @@ npm start
 
 Le serveur démarre sur **http://localhost:3000**
 
+**Pour arrêter le serveur :** Appuyez sur `Ctrl + C` dans le terminal
+
 ### 2. Ouvrir dans le navigateur
 
 Ouvrez votre navigateur et allez à :
@@ -38,7 +40,7 @@ http://localhost:3000
 ### Pour afficher une autre conférence :
 
 1. Ouvrez `Pup-Conference.html` dans un éditeur de texte
-2. Changez l'ID Syracuse à la ligne 33 :
+2. Changez l'ID Syracuse à la ligne 38 :
 
 ```javascript
 const syracuseId = "82378"; // ← Changez cet ID
@@ -135,6 +137,7 @@ Total : **4 chapitres principaux** dont 2 sections avec **15 sous-chapitres**
 - Navigation intuitive (clic sur section = toggle, clic sur sous-chapitre = lecture)
 - Vue compacte : possibilité de replier les sections
 - Symboles visuels ▼/▶ ├─ └─ pour comprendre la structure
+- Affichage du titre de la conférence au-dessus du programme
 
 ## Débogage
 
@@ -177,3 +180,4 @@ New-player/
 - **Clic sur section** : Déplier/replier les sous-chapitres
 - **Clic sur sous-chapitre** : Lancer la lecture à ce moment
 - **F12** : Ouvrir la console de débogage
+- **Ctrl + C** (dans le terminal) : Arrêter le serveur
