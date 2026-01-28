@@ -6,6 +6,12 @@ const { URL } = require('url');
 
 const PORT = 3000;
 
+// Mapping des routes API vers leurs URLs
+const API_ROUTES = {
+  '/api/json/': (id) => `http://med-api.philharmoniedeparis.fr/IAConferences/query/tostrapi/id/${id}?extended=true`,
+  '/api/xml/': (id) => `http://med-api.philharmoniedeparis.fr/Medias/GetAudioPlaylist/id/${id}/xml`
+};
+
 // Types MIME
 const MIME_TYPES = {
   '.html': 'text/html',
@@ -50,25 +56,16 @@ const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
   
   // Proxy pour les APIs
-  if (req.url.startsWith('/api/json/')) {
-    const id = req.url.replace('/api/json/', '').split('?')[0];
-    const apiUrl = `http://med-api.philharmoniedeparis.fr/IAConferences/query/tostrapi/id/${id}?extended=true`;
-    proxyApiRequest(apiUrl, res);
-    return;
-  }
-  
-  if (req.url.startsWith('/api/xml/')) {
-    const id = req.url.replace('/api/xml/', '').split('?')[0];
-    const apiUrl = `http://med-api.philharmoniedeparis.fr/Medias/GetAudioPlaylist/id/${id}/xml`;
-    proxyApiRequest(apiUrl, res);
-    return;
+  for (const [route, urlBuilder] of Object.entries(API_ROUTES)) {
+    if (req.url.startsWith(route)) {
+      const id = req.url.replace(route, '').split('?')[0];
+      proxyApiRequest(urlBuilder(id), res);
+      return;
+    }
   }
   
   // Servir les fichiers statiques
-  let filePath = '.' + req.url;
-  if (filePath === './') {
-    filePath = './Pup-Conference.html';
-  }
+  const filePath = req.url === '/' ? './Pup-Conference.html' : '.' + req.url;
   
   const extname = String(path.extname(filePath)).toLowerCase();
   const contentType = MIME_TYPES[extname] || 'application/octet-stream';
